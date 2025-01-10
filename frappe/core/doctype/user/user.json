@@ -17,6 +17,7 @@
   "column_break0",
   "full_name",
   "username",
+  "telegram_username",
   "column_break_11",
   "language",
   "time_zone",
@@ -748,6 +749,11 @@
    "fieldtype": "Select",
    "label": "Code Editor Type",
    "options": "vscode\nvim\nemacs"
+  },
+  {
+    "fieldname": "telegram_username",
+    "fieldtype": "Data",
+    "label": "Telegram Username"
   },
   {
    "collapsible": 1,

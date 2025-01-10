@@ -97,7 +97,12 @@
 			{{ _("Read Only Mode") }}
 		</div>
 	{% endif %}
-
+	{% if not only_static %}
+			{% if frappe.session.user != 'Guest' %}
+				{% include "templates/includes/navbar/navbar_user.html" %}
+				{% include "templates/includes/navbar/navbar_tariff.html" %}
+		{% endif %}
+	{% endif %}
 	{% include "templates/includes/navbar/navbar_login.html" %}
 
 </ul>
