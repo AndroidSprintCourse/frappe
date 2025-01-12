@@ -1,17 +1,28 @@
+{#
+Отвечает за отображение имени пользователя,
+а также прогресса по урокам (lessons_completed / lessons_count).
+Данные подтягиваются из базы (User, LMS Course Progress, Course Lesson).
+#}
+
 {% set user = frappe.db.get_value("User", frappe.session.user, ["email", "first_name", "full_name", "last_name"], as_dict=True) %}
 {% set lessons_completed = frappe.db.count("LMS Course Progress", filters={"member": frappe.session.user, "status": "Complete"}) %}
 {% set lessons_count = frappe.db.count("Course Lesson") %}
 
-<div class="flex-column justify-content-center align-items-center">
-    <div class="tariff-title font-weight-bold">
-    {% if user.full_name %}
-        {{ user.full_name }}
-    {% else %}
-        {{ user.first_name }} {{ user.last_name }}
-    {% endif %}
-    </div>
-    <div class="tariff-dates font-weight-light">
-        {{ lessons_completed }} / {{ lessons_count }}
-    </div>
-</div>
-<div style="border-left:1px solid #454545; height:30px; margin: 0 12px;"></div>
+<li class="nav-item d-flex flex-column justify-content-center align-items-center text-center">
+	<div class="tariff-title font-weight-semibold font-size-14">
+		{% if user.full_name %}
+		{{ user.full_name }}
+		{% else %}
+		{{ user.first_name }} {{ user.last_name }}
+		{% endif %}
+	</div>
+	<div class="tariff-dates font-weight-light font-size-14 header-progress">
+		<svg class="icon icon-sm mr-1">
+			<use href="#icon-check"></use>
+		</svg>
+		{{ lessons_completed }} из {{ lessons_count }}
+	</div>
+</li>
+
+<div class="header-divider"
+	 style="border-left:1px solid #E2E2E2; height:40px; margin: 0 12px;"></div>
