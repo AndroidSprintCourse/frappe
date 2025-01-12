@@ -8,15 +8,15 @@
 {% set lessons_completed = frappe.db.count("LMS Course Progress", filters={"member": frappe.session.user, "status": "Complete"}) %}
 {% set lessons_count = frappe.db.count("Course Lesson") %}
 
-<li class="nav-item d-flex flex-column text-center">
-	<div class="tariff-title font-weight-semibold">
+<li class="nav-item d-flex flex-column justify-content-center align-items-center text-center">
+	<div class="tariff-title font-weight-semibold font-size-14">
 		{% if user.full_name %}
 		{{ user.full_name }}
 		{% else %}
 		{{ user.first_name }} {{ user.last_name }}
 		{% endif %}
 	</div>
-	<div class="tariff-dates font-weight-light">
+	<div class="tariff-dates font-weight-light font-size-14">
 		<svg class="icon icon-sm mr-1">
 			<use href="#icon-check"></use>
 		</svg>
