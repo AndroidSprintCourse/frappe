@@ -9,7 +9,7 @@
 {% set lessons_count = frappe.db.count("Course Lesson") %}
 
 <li class="nav-item d-flex flex-column text-center">
-	<div class="tariff-title font-weight-bold">
+	<div class="tariff-title font-weight-semibold">
 		{% if user.full_name %}
 		{{ user.full_name }}
 		{% else %}
@@ -23,4 +23,6 @@
 		{{ lessons_completed }} из {{ lessons_count }}
 	</div>
 </li>
-<div class="divider"></div>
+
+<div class="header-divider"
+	 style="border-left:1px solid #E2E2E2; height:40px; margin: 0 12px;"></div>
