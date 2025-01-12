@@ -5,20 +5,26 @@
 {% set sub = frappe.db.get_value("Subscription", {"user": frappe.session.user}, ["user", "date_start", "date_end", "tariff"], as_dict=True) %}
 
 {% if sub %}
-<li class="nav-item d-flex flex-column text-center">
-	<div class="tariff-title font-weight-bold">
+
+<li class="nav-item flex-column justify-content-center align-items-center text-center font-size-14">
+	<div class="tariff-title font-weight-semibold">
 		{{ sub.tariff }}
 	</div>
 	<div class="tariff-dates font-weight-light">
 		до {{ sub.date_end }}
 	</div>
 </li>
-<div class="divider"></div>
+
+<div style="border-left:1px solid #E2E2E2; height:40px; margin: 0 12px;"></div>
+
 {% else %}
-<li class="nav-item d-flex flex-column text-center">
-	<div class="tariff-title font-weight-bold text-secondary">
-		ТАРИФ НЕ АКТИВИРОВАН
+
+<li class="nav-item flex-column justify-content-center align-items-center text-center">
+	<div class="tariff-title font-weight-semibold text-secondary font-size-12">
+		ТАРИФ<br>НЕ АКТИВИРОВАН
 	</div>
 </li>
-<div class="divider"></div>
+
+<div style="border-left:1px solid #E2E2E2; height:40px; margin: 0 12px;"></div>
+
 {% endif %}
