@@ -2,6 +2,7 @@
 # License: MIT. See LICENSE
 import csv
 import json
+import re
 from csv import Sniffer
 from io import StringIO
 
@@ -37,6 +38,33 @@ def read_csv_content_from_attached_file(doc):
 			_("Unable to open attached file. Did you export it as CSV?"), title=_("Invalid CSV Format")
 		)
 
+def split_preserving_quotes(text):
+	pattern = r'(".*?"|[^"\n\r]+)([\n\r]*)'
+	result = []
+	buffer = ""
+	inside_quotes = False
+
+	for match in re.finditer(pattern, text, re.DOTALL):
+		chunk, line_break = match.groups()
+		if inside_quotes:
+			buffer += chunk
+			if chunk.endswith('"'):
+				inside_quotes = False
+				result.append(buffer + line_break)
+				buffer = ""
+			else:
+				buffer += line_break
+		else:
+			if chunk.startswith('"'):
+				inside_quotes = not chunk.endswith('"')
+				buffer = chunk
+			else:
+				result.append(chunk + line_break)
+
+	if buffer:
+		result.append(buffer)
+
+	return result
 
 def read_csv_content(fcontent):
 	if not isinstance(fcontent, str):
@@ -56,7 +84,8 @@ def read_csv_content(fcontent):
 			)
 
 	fcontent = fcontent.encode("utf-8")
-	content = [frappe.safe_decode(line) for line in fcontent.splitlines(True)]
+	# content = [frappe.safe_decode(line) for line in fcontent.splitlines(True)]
+	content = [frappe.safe_decode(line) for line in split_preserving_quotes(fcontent)]
 
 	sniffer = Sniffer()
 	# Don't need to use whole csv, if more than 20 rows, use just first 20
