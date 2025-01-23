@@ -218,26 +218,56 @@ const submit_discussion = (e) => {
 	const title = $(".topic-title:visible").length ? $(".topic-title:visible").val().trim() : "";
 	let reply = this.comment_editor.get_value("comment_editor");
 
-	if (strip_html(reply).trim() != "" || reply.includes("img")) {
-		let doctype = target.closest(".discussions-parent").attr("data-doctype");
-		doctype = doctype ? decodeURIComponent(doctype) : doctype;
-
-		let docname = target.closest(".discussions-parent").attr("data-docname");
-		docname = docname ? decodeURIComponent(docname) : docname;
-
-		frappe.call({
-			method: "frappe.website.doctype.discussion_topic.discussion_topic.submit_discussion",
-			args: {
-				doctype: doctype ? doctype : "",
-				docname: docname ? docname : "",
-				reply: reply,
-				title: title,
-				topic_name: target.closest(".discussion-on-page").attr("data-topic"),
-				reply_name: reply_name,
-			},
-		});
+	if (strip_html(reply).trim() === "" && !reply.includes("img")) {
+		frappe.msgprint(__("Reply cannot be empty."));
+		return;
 	}
+
+	let doctype = target.closest(".discussions-parent").attr("data-doctype");
+	doctype = doctype ? decodeURIComponent(doctype) : doctype;
+
+	let docname = target.closest(".discussions-parent").attr("data-docname");
+	docname = docname ? decodeURIComponent(docname) : docname;
+
+	frappe.call({
+		method: "frappe.website.doctype.discussion_topic.discussion_topic.submit_discussion",
+		args: {
+			doctype: doctype || "",
+			docname: docname || "",
+			reply: reply,
+			title: title,
+			topic_name: target.closest(".discussion-on-page").attr("data-topic"),
+			reply_name: reply_name,
+		},
+		callback: (response) => {
+			if (response.message) {
+				// Assuming `response.message` contains the new discussion data
+				const newDiscussion = response.message;
+
+				// Insert the new discussion into the DOM
+				const newDiscussionTemplate = `
+                    <div class="discussion-item">
+                        <h5>${newDiscussion.title || "New Discussion"}</h5>
+                        <p>${newDiscussion.reply}</p>
+                    </div>
+                `;
+				$("#discussions-list").prepend(newDiscussionTemplate);
+
+				// Clear and close the modal
+				post_message_cleanup();
+
+				frappe.msgprint(__("Discussion added successfully."));
+			} else {
+				frappe.msgprint(__("Failed to submit discussion. Please try again."));
+			}
+		},
+		error: (xhr) => {
+			console.error("Error submitting discussion:", xhr.responseText);
+			frappe.msgprint(__("An error occurred. Please try again later."));
+		},
+	});
 };
+
 
 const login_from_discussion = (e) => {
 	e.preventDefault();
